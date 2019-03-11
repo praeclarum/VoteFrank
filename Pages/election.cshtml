@@ -1,0 +1,11 @@
+@page "{year}/{month}"
+@{
+    ViewData["Title"] = "Home page";
+    var election = Election.Get(int.Parse(""+@RouteData.Values["year"]), int.Parse(""+@RouteData.Values["month"]));
+}
+
+<h1>@election.Year @election.Kind Election</h1>
+
+<nav><a href=@election.CsvDataUrl>@election.CsvDataUrl</a></nav>
+
+<pre>@election.CsvData</pre>

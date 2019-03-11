@@ -1,9 +1,15 @@
 ﻿@page
-@model IndexModel
 @{
     ViewData["Title"] = "Home page";
+    var elections = Election.All;
 }
 
-<h1 class="display-4">Vote Frank</h1>
+<h1>Vote Frank</h1>
 
-<p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<h2>@elections.Length Elections</h2>
+
+<table>
+@foreach (var e in elections) {
+<tr><th><a href="/election/@e.Year/@e.Month">@e.Year-@e.Month @e.Kind</a></th></tr>
+}
+</table>
