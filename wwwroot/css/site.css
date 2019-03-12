@@ -18,3 +18,21 @@ footer {
 .races {
   vertical-align: top;
 }
+
+.thisyear {
+  background-color: rgba(0, 192, 0, 0.25);
+}
+
+th {
+  text-align: start;
+}
+th.num {
+  text-align: end;
+}
+
+td {
+  text-align: start;
+}
+td.num {
+  text-align: end;
+}

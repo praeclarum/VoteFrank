@@ -115,7 +115,6 @@ namespace VoteFrank
                             continue;
                         if (!InterestedInRace (l[i_race]))
                             continue;
-                        var race = GetRace(l[i_race]);
                         // System.Console.WriteLine($"{race} {precinct}");
                         switch (l[i_countertype]) {
                             case "Times Blank Voted":
@@ -138,9 +137,14 @@ namespace VoteFrank
                             case "LEVY NO":
                             case "APPROVED":
                             case "REJECTED":
+                            case "Against annexation":
+                            case "For annexation":
+                            case "Proposition 1A":
+                            case "Proposition 1B":
                                 break;
                             default:
                                 {
+                                    var race = GetRace(l[i_race]);
                                     var precinct = Precinct.Get(l[i_precinct]);
                                     var name = Normalize(l[i_countertype], nameNorms);
                                     var candidate = Person.Get(name);
@@ -164,11 +168,6 @@ namespace VoteFrank
             foreach (var r in Races) {
                 r.DeclareWinner ();
             }
-        }
-
-        bool InterestedInRace (string raceTitle)
-        {
-            return !raceTitle.Contains("Judge") && !raceTitle.Contains("Justice");
         }
 
         int GetCsvColumn (string[] columns, int numColumns, params string[] names)
@@ -290,6 +289,16 @@ namespace VoteFrank
             return race;
         }
 
+        bool InterestedInRace (string raceTitle)
+        {
+            return !raceTitle.Contains("Judge")
+                   && !raceTitle.Contains("Justice")
+                   && !raceTitle.Contains("School")
+                   && !raceTitle.Contains("Vashon")
+                   && !raceTitle.Contains("Si View")
+                   && !raceTitle.Contains("North Highline")
+                   && !raceTitle.StartsWith("PCO");
+        }
         static readonly (Regex, string)[] positionNorms = new (Regex, string)[] {
             (new Regex(@"Legislative District (\d+) Representative Position (\d+)"),         "Legislative District No. $1 Representative Position No. $2"),
             (new Regex(@"State Representative Legislative Dist No. (\d+) - Position (\d+)"), "Legislative District No. $1 Representative Position No. $2"),
@@ -298,11 +307,14 @@ namespace VoteFrank
             (new Regex(@"United States Representative Congressional District No. (\d+)"),    "Congressional District No. $1 US Representative"),
             (new Regex(@"Congressional District (\d+)"),                                     "Congressional District No. $1 US Representative"),
             (new Regex(@"SEA ([0-9\-]+) SEA ([0-9\-]+) PCO"),                                "PCO SEA $1"),
-            (new Regex(@"President and Vice President of the United States"),                "US President & Vice President"),            
+            (new Regex(@"President and Vice President of the United States"),                "US President & Vice President"),
+            (new Regex(@"Port of Seattle, Commissioner Position No. (\d+)"),                 "Port of Seattle Commissioner Position No. $1"),
+            (new Regex(@"King County US Senator"),                                           "US Senator"),
         };
 
         static readonly (Regex, string)[] nameNorms = new (Regex, string)[] {
             (new Regex(@"Lorena Gonzalez"), "M. Lorena González"),
+            (new Regex(@"Goodspaceguy"), "GoodSpaceGuy"),
         };
 
         static string Normalize (string text, (Regex, string)[] norms)
@@ -319,18 +331,18 @@ namespace VoteFrank
         static readonly HttpClient http = new HttpClient ();
 
         public static Election[] All {get; private set; } = {
-            // new Election (2018, 11, "General", "ghxg-x8xz"),
-            // new Election (2018, 8, "Primary", "juuz-29xu"),
-            // new Election (2017, 11, "General", "xmvr-b3my"),
-            // new Election (2017, 8, "Primary", "u623-b62i"),
+            new Election (2018, 11, "General", "ghxg-x8xz"),
+            new Election (2018, 8, "Primary", "juuz-29xu"),
+            new Election (2017, 11, "General", "xmvr-b3my"),
+            new Election (2017, 8, "Primary", "u623-b62i"),
             new Election (2016, 11, "General", "b27z-cdmk"),
-            // new Election (2016, 8, "Primary", "d9qg-mtfe"),
-            // new Election (2015, 11, "General", "kncv-f6kh"),
-            // new Election (2015, 8, "Primary", "pyps-tcwb"),
-            // new Election (2014, 11, "General", "44iw-f49v"),
-            // new Election (2013, 11, "General", "vrn2-xcr7"),
-            // new Election (2012, 11, "General", "u6ig-5qm8"),
-            // new Election (2011, 11, "General", "hgu2-qaye"),
+            new Election (2016, 8, "Primary", "d9qg-mtfe"),
+            new Election (2015, 11, "General", "kncv-f6kh"),
+            new Election (2015, 8, "Primary", "pyps-tcwb"),
+            new Election (2014, 11, "General", "44iw-f49v"),
+            new Election (2013, 11, "General", "vrn2-xcr7"),
+            new Election (2012, 11, "General", "u6ig-5qm8"),
+            new Election (2011, 11, "General", "hgu2-qaye"),
             // new Election (2010, 11, "General", "jet5-cigp"),
         };
 

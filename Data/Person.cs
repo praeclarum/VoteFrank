@@ -1,4 +1,5 @@
 using System.Collections.Concurrent;
+using System.Linq;
 using System.Threading;
 
 namespace VoteFrank
@@ -49,6 +50,8 @@ namespace VoteFrank
         }
 
         static readonly ConcurrentDictionary<string, Person> all = new ConcurrentDictionary<string, Person> ();
+
+        public static Person[] All => all.Values.ToArray ();
 
         public static Person Get(string name)
         {

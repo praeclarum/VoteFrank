@@ -1,4 +1,5 @@
 using System.Collections.Concurrent;
+using System.Linq;
 
 namespace VoteFrank
 {
@@ -9,6 +10,8 @@ namespace VoteFrank
         public override string ToString() => Title;
 
         static readonly ConcurrentDictionary<string, Precinct> all = new ConcurrentDictionary<string, Precinct> ();
+
+        public static Precinct[] All => all.Values.ToArray ();
 
         public static Precinct Get(string title)
         {

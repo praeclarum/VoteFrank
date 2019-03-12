@@ -1,4 +1,5 @@
 using System.Collections.Concurrent;
+using System.Linq;
 
 namespace VoteFrank
 {
@@ -11,6 +12,8 @@ namespace VoteFrank
         public override string ToString() => Title;
 
         static readonly ConcurrentDictionary<string, Position> all = new ConcurrentDictionary<string, Position> ();
+
+        public static Position[] All => all.Values.ToArray ();
 
         public static Position Get(string title)
         {

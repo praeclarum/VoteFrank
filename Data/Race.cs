@@ -31,7 +31,12 @@ namespace VoteFrank
 
         public void DeclareWinner()
         {
-            Winner = Votes.Values.OrderByDescending (x => x.TotalCount).Select (x => x.Candidate).FirstOrDefault ();
+            var list = Votes.OrderByDescending (x => x.Value.TotalCount).ToList ();
+            Winner = list.Count == 0 ? null : list.First().Value.Candidate;
+            for (int i = 0; i < list.Count; i++) {
+                var v = list[i].Value;
+                v.Candidate.AddRaceResult (this, i + 1);
+            }
         }
     }
 }
