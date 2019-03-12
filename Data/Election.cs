@@ -297,7 +297,8 @@ namespace VoteFrank
                    && !raceTitle.Contains("Vashon")
                    && !raceTitle.Contains("Si View")
                    && !raceTitle.Contains("North Highline")
-                   && !raceTitle.StartsWith("PCO");
+                   && !raceTitle.StartsWith("PCO")
+                   && !raceTitle.EndsWith("PCO");
         }
         static readonly (Regex, string)[] positionNorms = new (Regex, string)[] {
             (new Regex(@"Legislative District (\d+) Representative Position (\d+)"),         "Legislative District No. $1 Representative Position No. $2"),
