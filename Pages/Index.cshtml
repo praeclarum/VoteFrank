@@ -9,7 +9,7 @@
 <h2>@elections.Length Elections</h2>
 
 <table>
-@foreach (var e in elections) {
+@foreach (var e in elections.OrderByDescending(x => x.Date)) {
 <tr><th><a href="/election/@e.Year/@e.Month">@e.Year-@e.Month @e.Kind</a></th></tr>
 }
 </table>

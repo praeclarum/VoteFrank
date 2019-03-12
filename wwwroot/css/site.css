@@ -6,3 +6,15 @@ body {
 footer {
   margin-top: 8em;
 }
+
+
+.race {
+  border: solid 1px #CCC;
+  margin: 1em 1em;
+  padding: 0.25em 0.5em;
+  display: block;
+}
+
+.races {
+  vertical-align: top;
+}

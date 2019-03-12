@@ -1,0 +1,16 @@
+@page "{title}"
+@{
+    var elections = Election.All;
+    var position = Position.Get(""+@RouteData.Values["title"]);
+    ViewData["Title"] = position.Title;
+}
+
+<h1>@position.Title</h1>
+
+
+@foreach (var r in position.Races.OrderByDescending(x => x.Date)) {
+    <h2><a href="/election/@r.Election.Year/@r.Election.Month">@r.Election.Year @r.Election.Month @r.Election.Kind Election</a></h2>
+    @await Html.PartialAsync("_RaceSummary", r)
+}
+
+

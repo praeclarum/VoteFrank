@@ -1,0 +1,14 @@
+@model Race
+
+<div class="race">
+
+
+<h3><a href="/position/@Uri.EscapeDataString(Model.Position.ToString())">@Model.Position</a></h3>
+
+<ol>
+@foreach (var v in @Model.Votes.Values.OrderByDescending(x => x.TotalCount)) {
+    <li><a href="/person/@Uri.EscapeDataString(v.Candidate.Name)">@v.Candidate</a> with @v.TotalCount.ToString("#,0") votes (@v.PrecinctCounts.Count precincts)</li>
+}
+</ol>
+
+</div>

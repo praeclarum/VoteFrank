@@ -1,11 +1,14 @@
 @page "{year}/{month}"
 @{
-    ViewData["Title"] = "Home page";
     var election = Election.Get(int.Parse(""+@RouteData.Values["year"]), int.Parse(""+@RouteData.Values["month"]));
+    ViewData["Title"] = election.Year + " " + election.Kind + " Election";
 }
 
 <h1>@election.Year @election.Kind Election</h1>
 
-<nav><a href=@election.CsvDataUrl>@election.CsvDataUrl</a></nav>
+<div class="races">
+@foreach (var r in election.Races) {
+    @await Html.PartialAsync("_RaceSummary", r)
+}
+</div>
 
-<pre>@election.CsvData</pre>
