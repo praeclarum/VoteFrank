@@ -5,17 +5,17 @@ using System.Linq;
 using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace VoteFrank
 {
     public class Election
     {
-        public int Year { get; }
-        public int Month { get; }
-        public string Kind { get; }
-        public string DataId { get; }
+        public int Year { get; set; }
+        public int Month { get; set; }
+        public string Kind { get; set; }
+        public string DataId { get; set; }
         public string CsvDataUrl => $"https://data.kingcounty.gov/api/views/{DataId}/rows.csv?accessType=DOWNLOAD&api_foundry=true";
-        public string CsvData { get; private set; } = "";
         public DateTime Date => new DateTime (Year, Month, 1);
 
         readonly Dictionary<string, Race> races = new Dictionary<string, Race> ();
@@ -29,72 +29,95 @@ namespace VoteFrank
             DataId = dataId;
         }
 
+        public Election ()
+        {
+            Kind = "";
+            DataId = "";
+        }
+
         bool loaded = false;
+
+        static readonly Lazy<string> dataDirL = new Lazy<string> (() => {
+            var homeDir = Environment.GetEnvironmentVariable("HOME");
+            if (string.IsNullOrEmpty(homeDir)) {
+                homeDir = Environment.CurrentDirectory;
+            }
+            var dataDir = Path.Combine(homeDir, "Data");
+            if (!Directory.Exists (dataDir))
+                Directory.CreateDirectory (dataDir);
+            var edataDir = Path.Combine(dataDir, "ElectionResults");
+            if (!Directory.Exists (edataDir))
+                Directory.CreateDirectory (edataDir);
+            return edataDir;
+        });
 
         void Load ()
         {
             if (loaded)
                 return;
             loaded = true;
+            LoadCsv ();
+        }
+
+        void LoadCsv ()
+        {
             // Read CSV
+            var csvData = "";
             if (!string.IsNullOrEmpty(DataId)) {
-                var homeDir = Environment.GetEnvironmentVariable("HOME");
-                if (string.IsNullOrEmpty(homeDir)) {
-                    homeDir = Environment.CurrentDirectory;
-                }
-                var dataDir = Path.Combine(homeDir, "Data");
-                if (!Directory.Exists (dataDir))
-                    Directory.CreateDirectory (dataDir);
-                var edataDir = Path.Combine(dataDir, "ElectionResults");
-                if (!Directory.Exists (edataDir))
-                    Directory.CreateDirectory (edataDir);
-                var path = Path.Combine(edataDir, DataId + ".csv");
+                var edataDir = dataDirL.Value;
+                var csvPath = Path.Combine(edataDir, DataId + ".csv");
                 var content = "";
-                if (File.Exists(path)) {
-                    content = File.ReadAllText (path);
+                if (File.Exists(csvPath)) {
+                    content = File.ReadAllText (csvPath);
                 }
                 else {
                     try {
                         content = http.GetStringAsync(CsvDataUrl).Result;
-                        File.WriteAllText(path, content);
+                        File.WriteAllText(csvPath, content);
                     }
                     catch (Exception ex) {
                         System.Console.WriteLine(ex);
                     }
                 }
-                CsvData = content;
+                csvData = content;
             }
             else {
-                CsvData = "";
+                csvData = "";
             }
 
+            //
             // Process CSV
-            if (!string.IsNullOrEmpty (CsvData)) {
+            //
+            if (!string.IsNullOrEmpty (csvData)) {
                 System.Console.WriteLine($"Loading {Year}/{Month} {Kind} {DataId}...");
-                var lines = Csv.CsvReader.Read (new StringReader(CsvData));
+
+                var csvMemory = csvData.AsMemory ();
+                var csvCols = new string[100];
+                var csvRem = ReadCsvLine (csvMemory, csvCols, out var numHeaderColumns);
+                var i_precinct = GetCsvColumn (csvCols, numHeaderColumns, "precinct", "Precinct");
+                var i_race = GetCsvColumn (csvCols, numHeaderColumns, "race", "Race");
+                var i_countertype = GetCsvColumn (csvCols, numHeaderColumns, "countertype", "CounterType");
+                var i_sumofcount = GetCsvColumn (csvCols, numHeaderColumns, "sumofcount", "SumOfCount");
+
+                var numColumns = numHeaderColumns;
                 var count = 0;
-                var k_precinct = "precinct";
-                var k_race = "race";
-                var k_countertype = "countertype";
-                var k_sumofcount = "sumofcount";
-                var hasHeader = false;
                 var laste = "";
-                foreach (var l in lines) {
+                while (csvRem.Length >= numHeaderColumns) {
+                    csvRem = ReadCsvLine (csvRem, csvCols, out numColumns);
+                    if (numColumns != numHeaderColumns) {
+                        System.Console.WriteLine("BAD LINE: " + string.Join(",", csvCols.Take(numColumns)));
+                        continue;
+                    }
+                    var l = csvCols;
                     count++;
                     try {
-                        if (!hasHeader) {
-                            hasHeader = true;
-                            if (l.Headers.Contains("Precinct")) k_precinct = "Precinct";
-                            if (l.Headers.Contains("Race")) k_race = "Race";
-                            if (l.Headers.Contains("CounterType")) k_countertype = "CounterType";
-                            if (l.Headers.Contains("SumOfCount")) k_sumofcount = "SumOfCount";
-                        }
-                        if (!l[k_precinct].StartsWith("SEA"))
+                        if (!l[i_precinct].StartsWith("SEA"))
                             continue;
-                        var precinct = Precinct.Get(l[k_precinct]);
-                        var race = GetRace(l[k_race]);
+                        if (!InterestedInRace (l[i_race]))
+                            continue;
+                        var race = GetRace(l[i_race]);
                         // System.Console.WriteLine($"{race} {precinct}");
-                        switch (l[k_countertype]) {
+                        switch (l[i_countertype]) {
                             case "Times Blank Voted":
                             case "Times Counted":
                             case "Times Over Voted":
@@ -109,12 +132,19 @@ namespace VoteFrank
                             case "No":
                             case "Maintained":
                             case "Repealed":
+                            case "YES":
+                            case "NO":
+                            case "LEVY YES":
+                            case "LEVY NO":
+                            case "APPROVED":
+                            case "REJECTED":
                                 break;
                             default:
                                 {
-                                    var name = Normalize(l[k_countertype], nameNorms);
+                                    var precinct = Precinct.Get(l[i_precinct]);
+                                    var name = Normalize(l[i_countertype], nameNorms);
                                     var candidate = Person.Get(name);
-                                    race.AddVotes (candidate, int.Parse(l[k_sumofcount]), precinct);
+                                    race.AddVotes (candidate, int.Parse(l[i_sumofcount]), precinct);
                                 }
                                 break;
                         }
@@ -136,11 +166,117 @@ namespace VoteFrank
             }
         }
 
+        bool InterestedInRace (string raceTitle)
+        {
+            return !raceTitle.Contains("Judge") && !raceTitle.Contains("Justice");
+        }
+
+        int GetCsvColumn (string[] columns, int numColumns, params string[] names)
+        {
+            foreach (var n in names) {
+                for (int i = 0; i < numColumns; i++) {
+                    var c = columns[i];
+                    if (n == c) {
+                        return i;
+                    }
+                }
+            }
+            throw new Exception("Column not found: " + string.Join(", ", names));
+        }
+
+        ReadOnlyMemory<char> ReadCsvLine(ReadOnlyMemory<char> textMemory, string[] columns, out int numColumns)
+        {
+            var text = textMemory.Span;
+            var column = 0;
+            var state = ReadState.WaitingForColumnStart;
+            var i = 0;
+            var colStartI = 0;
+            var colEndI = 0;
+            while (i < text.Length && state != ReadState.Done) {
+                var ch = text[i];
+                switch (state) {
+                    case ReadState.WaitingForColumnStart:
+                        if (ch == '\"') {
+                            state = ReadState.ReadingEscaped;
+                            colStartI = i + 1;
+                            i++;
+                        }
+                        else if (ch == '\r') {
+                            i++;
+                        }
+                        else if (ch == '\n') {
+                            state = ReadState.Done;
+                            i++;
+                        }
+                        else if (ch == ',') {
+                            columns[column] = string.Empty;
+                            column++;
+                            i++;
+                        }
+                        else {
+                            state = ReadState.Reading;
+                            colStartI = i;
+                            i++;
+                        }
+                        break;
+                    case ReadState.ReadingEscaped:
+                        if (ch == '\"') {
+                            if ((i + 1) < text.Length && text[i+1] == '\"') {
+                                i += 2;
+                            }
+                            else {
+                                colEndI = i;
+                                columns[column] = String.Intern (new String (text.Slice (colStartI, colEndI - colStartI)));
+                                // Console.WriteLine ($"{column} = {columns[column]}");
+                                column++;
+                                i++;
+                                if (i < text.Length && text[i] == ',')
+                                    i++;
+                                state = ReadState.WaitingForColumnStart;
+                            }
+                        }
+                        else {
+                            i++;
+                        }
+                        break;
+                    case ReadState.Reading:
+                        if (ch == ',' || ch == '\n' || (ch == '\r' && i + 1 < text.Length && text[i+1] == '\n')) {
+                            colEndI = i;
+                            // Console.WriteLine ($"textMemory.Slice ({colStartI}, {colEndI} - {colStartI})");
+                            columns[column] = String.Intern (new String (text.Slice (colStartI, colEndI - colStartI)));
+                            // Console.WriteLine ($"{column} = {columns[column]}");
+                            column++;
+                            i++;
+                            if (ch == '\r')
+                                i++;
+                            state = ch == ',' ? ReadState.WaitingForColumnStart : ReadState.Done;
+                        }
+                        else {
+                            i++;
+                        }
+                        break;
+                    default:
+                        throw new NotImplementedException ($"{state}");
+                }
+            }
+            numColumns = column;
+            return textMemory.Slice (i);
+        }
+
+        enum ReadState { WaitingForColumnStart, ReadingEscaped, Reading, Done }
+
         Race GetRace(string rawPosition)
         {
-            var ipart = rawPosition.IndexOf("partisan office");
-            if (ipart > 0)
+            var ipart = rawPosition.IndexOf("nonpartisan");
+            if (ipart > 0) {
                 rawPosition = rawPosition.Substring(0, ipart).Trim();
+            }
+            else {
+                ipart = rawPosition.IndexOf("partisan");
+                if (ipart > 0) {
+                    rawPosition = rawPosition.Substring(0, ipart).Trim();
+                }
+            }
             var position = Normalize(rawPosition, positionNorms);
             if (races.TryGetValue (position, out var race))
                 return race;
@@ -182,26 +318,46 @@ namespace VoteFrank
 
         static readonly HttpClient http = new HttpClient ();
 
-        public static readonly Election[] All = {
-            new Election (2018, 11, "General", "ghxg-x8xz"),
-            new Election (2018, 8, "Primary", "juuz-29xu"),
-            new Election (2017, 11, "General", "xmvr-b3my"),
-            new Election (2017, 8, "Primary", "u623-b62i"),
+        public static Election[] All {get; private set; } = {
+            // new Election (2018, 11, "General", "ghxg-x8xz"),
+            // new Election (2018, 8, "Primary", "juuz-29xu"),
+            // new Election (2017, 11, "General", "xmvr-b3my"),
+            // new Election (2017, 8, "Primary", "u623-b62i"),
             new Election (2016, 11, "General", "b27z-cdmk"),
-            new Election (2016, 8, "Primary", "d9qg-mtfe"),
-            new Election (2015, 11, "General", "kncv-f6kh"),
-            new Election (2015, 8, "Primary", "pyps-tcwb"),
-            new Election (2014, 11, "General", "44iw-f49v"),
-            new Election (2013, 11, "General", "vrn2-xcr7"),
-            new Election (2012, 11, "General", "u6ig-5qm8"),
-            new Election (2011, 11, "General", "hgu2-qaye"),
-            new Election (2010, 11, "General", "jet5-cigp"),
+            // new Election (2016, 8, "Primary", "d9qg-mtfe"),
+            // new Election (2015, 11, "General", "kncv-f6kh"),
+            // new Election (2015, 8, "Primary", "pyps-tcwb"),
+            // new Election (2014, 11, "General", "44iw-f49v"),
+            // new Election (2013, 11, "General", "vrn2-xcr7"),
+            // new Election (2012, 11, "General", "u6ig-5qm8"),
+            // new Election (2011, 11, "General", "hgu2-qaye"),
+            // new Election (2010, 11, "General", "jet5-cigp"),
         };
+
+        const int DataVersion = 3;
 
         static Election()
         {
-            // Parallel.ForEach(All, e => e.Load ());
-            foreach (var e in All) e.Load ();
+            // var jsonPath = Path.Combine (dataDirL.Value, $"all{All.Length}_v{DataVersion}.json");
+
+            // if (File.Exists(jsonPath)) {
+            //     var json = File.ReadAllText (jsonPath);
+            //     All = JsonConvert.DeserializeObject<Election[]> (json);
+            //     System.Console.WriteLine($"LOADED {All.Length}");
+            // }
+            // else {
+                // Parallel.ForEach(All, e => e.Load ());
+                foreach (var e in All) e.Load ();
+
+                //
+                // Save json
+                //
+                // var jsonSettings = new JsonSerializerSettings ();
+                // jsonSettings.PreserveReferencesHandling = PreserveReferencesHandling.Objects;
+                // jsonSettings.Formatting = Formatting.None;
+                // var json = JsonConvert.SerializeObject (All, jsonSettings);
+                // File.WriteAllText (jsonPath, json);
+            // }
         }
 
         public static Election Get (int year, int month) => All.First (x => x.Year == year && x.Month == month);
