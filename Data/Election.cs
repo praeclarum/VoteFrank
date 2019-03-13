@@ -96,8 +96,8 @@ namespace VoteFrank
                 var csvRem = ReadCsvLine (csvMemory, csvCols, out var numHeaderColumns);
                 var i_precinct = GetCsvColumn (csvCols, numHeaderColumns, "precinct", "Precinct");
                 var i_race = GetCsvColumn (csvCols, numHeaderColumns, "race", "Race");
-                var i_countertype = GetCsvColumn (csvCols, numHeaderColumns, "countertype", "CounterType");
-                var i_sumofcount = GetCsvColumn (csvCols, numHeaderColumns, "sumofcount", "SumOfCount");
+                var i_countertype = GetCsvColumn (csvCols, numHeaderColumns, "countertype", "CounterType", "Candidate");
+                var i_sumofcount = GetCsvColumn (csvCols, numHeaderColumns, "sumofcount", "SumOfCount", "Count");
 
                 var numColumns = numHeaderColumns;
                 var count = 0;
@@ -180,7 +180,7 @@ namespace VoteFrank
                     }
                 }
             }
-            throw new Exception("Column not found: " + string.Join(", ", names));
+            throw new Exception("Column not found: " + string.Join(", ", names) + " from " + string.Join(", ", columns.Take(numColumns)));
         }
 
         ReadOnlyMemory<char> ReadCsvLine(ReadOnlyMemory<char> textMemory, string[] columns, out int numColumns)
@@ -276,6 +276,19 @@ namespace VoteFrank
                     rawPosition = rawPosition.Substring(0, ipart).Trim();
                 }
             }
+            ipart = rawPosition.IndexOf("unexpired");
+            if (ipart > 0) {
+                rawPosition = rawPosition.Substring(0, ipart).Trim();
+            }
+            ipart = rawPosition.IndexOf("Short and full");
+            if (ipart > 0) {
+                rawPosition = rawPosition.Substring(0, ipart).Trim();
+            }
+            ipart = rawPosition.IndexOf("2-year");
+            if (ipart > 0) {
+                rawPosition = rawPosition.Substring(0, ipart).Trim();
+            }
+
             var position = Normalize(rawPosition, positionNorms);
             if (races.TryGetValue (position, out var race))
                 return race;
@@ -311,6 +324,8 @@ namespace VoteFrank
             (new Regex(@"President and Vice President of the United States"),                "US President & Vice President"),
             (new Regex(@"Port of Seattle, Commissioner Position No. (\d+)"),                 "Port of Seattle Commissioner Position No. $1"),
             (new Regex(@"King County US Senator"),                                           "US Senator"),
+            (new Regex(@"United States Senator"),                                            "US Senator"),
+            (new Regex(@"^President$"),                                                      "US President & Vice President"),
         };
 
         static readonly (Regex, string)[] nameNorms = new (Regex, string)[] {
@@ -344,7 +359,9 @@ namespace VoteFrank
             new Election (2013, 11, "General", "vrn2-xcr7"),
             new Election (2012, 11, "General", "u6ig-5qm8"),
             new Election (2011, 11, "General", "hgu2-qaye"),
-            // new Election (2010, 11, "General", "jet5-cigp"),
+            new Election (2010, 11, "General", "jet5-cigp"),
+            new Election (2009, 11, "General", "c34s-iuef"),
+            new Election (2008, 11, "General", "7x99-befe"),
         };
 
         const int DataVersion = 3;

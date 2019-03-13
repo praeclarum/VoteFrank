@@ -9,7 +9,7 @@
         .Select (p => (p, p.Races.Where(x => x.Winner == p).OrderByDescending(x => x.Date).First ()))
         .OrderByDescending (x => x.Item2.Date)
         .ThenByDescending (x => x.Item1.NumGeneralWins)
-        .Take(30);
+        .Take(100);
 
     (Position, Person, Election, int?, int, double) GetPositionData(Position p)
     {
@@ -30,9 +30,9 @@
     var positions = Position.All.OrderBy(x => x.Title).Select(GetPositionData).ToList();
 }
 
-<h1>Vote Frank</h1>
+<h1>Vote Frank!</h1>
 
-<h2>Offices</h2>
+<h2>Electable Offices</h2>
 
 <table cellspacing="0" cellpadding="2">
 <tr>
