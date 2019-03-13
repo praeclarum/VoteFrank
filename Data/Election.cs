@@ -266,25 +266,25 @@ namespace VoteFrank
 
         Race GetRace(string rawPosition)
         {
-            var ipart = rawPosition.IndexOf("nonpartisan");
+            var ipart = rawPosition.IndexOf("nonpartisan", StringComparison.InvariantCultureIgnoreCase);
             if (ipart > 0) {
                 rawPosition = rawPosition.Substring(0, ipart).Trim();
             }
             else {
-                ipart = rawPosition.IndexOf("partisan");
+                ipart = rawPosition.IndexOf("partisan", StringComparison.InvariantCultureIgnoreCase);
                 if (ipart > 0) {
                     rawPosition = rawPosition.Substring(0, ipart).Trim();
                 }
             }
-            ipart = rawPosition.IndexOf("unexpired");
+            ipart = rawPosition.IndexOf("unexpired", StringComparison.InvariantCultureIgnoreCase);
             if (ipart > 0) {
                 rawPosition = rawPosition.Substring(0, ipart).Trim();
             }
-            ipart = rawPosition.IndexOf("Short and full");
+            ipart = rawPosition.IndexOf("Short and full", StringComparison.InvariantCultureIgnoreCase);
             if (ipart > 0) {
                 rawPosition = rawPosition.Substring(0, ipart).Trim();
             }
-            ipart = rawPosition.IndexOf("2-year");
+            ipart = rawPosition.IndexOf("2-year", StringComparison.InvariantCultureIgnoreCase);
             if (ipart > 0) {
                 rawPosition = rawPosition.Substring(0, ipart).Trim();
             }
@@ -306,7 +306,9 @@ namespace VoteFrank
         {
             return !raceTitle.Contains("Judge")
                    && !raceTitle.Contains("Justice")
+                   && !raceTitle.Contains("Attorney")
                    && !raceTitle.Contains("School")
+                   && !raceTitle.Contains("Superintendent of Public Instruction")
                    && !raceTitle.Contains("Vashon")
                    && !raceTitle.Contains("Si View")
                    && !raceTitle.Contains("North Highline")
@@ -316,6 +318,8 @@ namespace VoteFrank
         static readonly (Regex, string)[] positionNorms = new (Regex, string)[] {
             (new Regex(@"Legislative District (\d+) Representative Position (\d+)"),         "Legislative District No. $1 Representative Position No. $2"),
             (new Regex(@"State Representative Legislative Dist No. (\d+) - Position (\d+)"), "Legislative District No. $1 Representative Position No. $2"),
+            (new Regex(@"State Senator Legislative Dist No. (\d+)"),                         "Legislative District No. $1 State Senator"),
+            (new Regex(@"Legislative District (\d+) State Senator"),                         "Legislative District No. $1 State Senator"),
             (new Regex(@"US Representative Congressional District (\d+)"),                   "Congressional District No. $1 US Representative"),
             (new Regex(@"US Representative Congressional District No. (\d+)"),               "Congressional District No. $1 US Representative"),
             (new Regex(@"United States Representative Congressional District No. (\d+)"),    "Congressional District No. $1 US Representative"),
@@ -326,6 +330,10 @@ namespace VoteFrank
             (new Regex(@"King County US Senator"),                                           "US Senator"),
             (new Regex(@"United States Senator"),                                            "US Senator"),
             (new Regex(@"^President$"),                                                      "US President & Vice President"),
+            (new Regex(@"^Sheriff$"),                                                        "King County Sheriff"),
+            (new Regex(@"^County Executive$"),                                               "King County Executive"),
+            (new Regex(@"Council District No. (\d+) Council District No. (\d+)"),            "Metropolitan King County Council District No. $1"),
+            (new Regex(@"County Council County Council District No. (\d+)"),                 "Metropolitan King County Council District No. $1"),
         };
 
         static readonly (Regex, string)[] nameNorms = new (Regex, string)[] {
