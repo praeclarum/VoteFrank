@@ -23,6 +23,10 @@ footer {
   background-color: rgba(0, 192, 0, 0.25);
 }
 
+tr:hover {
+  background-color: rgba(192, 192, 192, 0.25);
+}
+
 th {
   text-align: start;
 }

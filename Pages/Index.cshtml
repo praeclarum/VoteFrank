@@ -11,7 +11,7 @@
         .ThenByDescending (x => x.Item1.NumGeneralWins)
         .Take(100);
 
-    (Position, Person, Election, int?, int, double) GetPositionData(Position p)
+    (Position, Person, Election, int?, int, double, int?) GetPositionData(Position p)
     {
         var races = p.Races.Where(x => x.Election.Kind != "Primary").OrderByDescending(x => x.Date).ToList ();
         var lastR = races.FirstOrDefault();
@@ -25,7 +25,12 @@
         var precincts = races.Count > 0 ? races.Average (x => x.Votes.Values.First().PrecinctCounts.Count) : 0;
         var numUniqueWinners = races.Select (x => x.Winner).Distinct().Count();
         var volatility = races.Count > 0 ? Math.Round(numUniqueWinners / (double)races.Count * 100.0) : 0.0;
-        return (p, lastW, lastE, nextYear, (int)precincts, volatility);
+        int? margin = null;
+        if (lastR != null && lastR.Votes.Count > 1) {
+            var vs = lastR.Votes.Values.OrderByDescending (x => x.TotalCount).ToList ();
+            margin = vs[0].TotalCount - vs[1].TotalCount;
+        }
+        return (p, lastW, lastE, nextYear, (int)precincts, volatility, margin);
     }
     var positions = Position.All.OrderBy(x => x.Title).Select(GetPositionData).ToList();
 }
@@ -42,8 +47,9 @@
     <th class="num">Last Year</th>
     <th class="num">Next Year</th>
     <th class="num">Volatility</th>
+    <th class="num">Victory Margin</th>
 </tr>
-@foreach (var (p, person, e, nextYear, nprecincts, volatility) in positions) {
+@foreach (var (p, person, e, nextYear, nprecincts, volatility, margin) in positions) {
     var thisyear = false;//nextYear == (DateTime.Now.Year);
     var clas = thisyear ? "thisyear" : "";
 <tr class="@clas">
@@ -53,6 +59,7 @@
     <td class="num"><a href="/position/@Uri.EscapeDataString(p.Title)">@e?.Year</a></td>
     <td class="num">@nextYear</td>
     <td class="num">@volatility</td>
+    <td class="num">@(margin?.ToString("#,0") ?? "-")</td>
 </tr>
 }
 </table>
