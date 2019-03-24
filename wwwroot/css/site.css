@@ -105,6 +105,13 @@ footer {
 .legal {
   color: rgba(255, 255, 255, 0.7);
 }
+.underconstruction {
+  text-align: center;
+  margin: 4em 0em;
+}
+.underconstruction img {
+  width: 80%;
+}
 
 
 /* == HOME == */
@@ -142,4 +149,24 @@ td {
 }
 td.num {
   text-align: end;
+}
+
+
+/* == MOBILE == */
+
+@media only screen and (max-width: 600px) {
+  nav {
+    text-align: center;
+    padding-bottom: 1em;
+  }
+  nav .links {
+    float: none;
+    margin: 1em;
+  }
+  h1,h2,h3,h4,h5,h6 {
+    padding: 1em 0em;
+  }
+  h1 { font-size: 200%; }
+  h2 { font-size: 150%; }
+  h3 { font-size: 125%; }
 }
