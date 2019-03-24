@@ -10,18 +10,18 @@
 <body>
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <a href="/"><img src="~/images/logo256.png" alt="Vote Frank!" /></a>
+            <a href="/"><img src="~/images/logo256.png" alt="Vote Frank Krueger" height="128" /></a>
         </nav>
     </header>
     <main>
         @RenderBody()
     </main>
     <footer>
-            &copy; @DateTime.Now.Year
-            <div>Paid for by<br/>
-            Vote Frank Krueger
-            PO Box 95575<br>
-            Seattle, WA 98145</div>
+        <div class="paidforby">Paid for by<br/><br/>
+        Vote Frank Krueger<br/>
+        PO Box 95575<br/>
+        Seattle, WA 98145</div>
+        <div class="legal">&copy; @DateTime.Now.Year Vote for Frank Krueger</div>
     </footer>
 
     <script src="~/js/site.js" asp-append-version="true"></script>
