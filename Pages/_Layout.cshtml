@@ -10,17 +10,18 @@
 <body>
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <a href="/">Home</a>
+            <a href="/"><img src="~/images/logo256.png" alt="Vote Frank!" /></a>
         </nav>
     </header>
-    <div>
-        <main>
-            @RenderBody()
-        </main>
-    </div>
-
+    <main>
+        @RenderBody()
+    </main>
     <footer>
-            &copy; 2019 - VoteFrank
+            &copy; @DateTime.Now.Year
+            <div>Paid for by<br/>
+            Vote Frank Krueger
+            PO Box 95575<br>
+            Seattle, WA 98145</div>
     </footer>
 
     <script src="~/js/site.js" asp-append-version="true"></script>
