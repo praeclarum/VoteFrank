@@ -55,7 +55,7 @@ body {
   background-color: rgb(25, 60, 110);
 }
 h1,h2,h3,h4,h5,h6 {
-  font-family: 'DIN Condensed', Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+  font-family: 'DIN Condensed', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
   font-weight: bold;
   padding: 0em 1em;
   text-align: center;
@@ -63,6 +63,8 @@ h1,h2,h3,h4,h5,h6 {
 h1 { font-size: 300%; }
 h2 { font-size: 200%; }
 h3 { font-size: 150%; }
+strong { font-weight: bold; }
+li { list-style-type: disc; }
 nav {
   vertical-align: top;
   position: fixed;
@@ -82,19 +84,28 @@ nav .links a {
   border: solid 2px rgba(255, 255, 255, 0.0);
   background-color: rgba(255, 255, 255, 0.9);
   border-radius: 0.25em;
-  color: rgba(0, 0, 0, 0.9) !important;
+  color: rgba(0, 0, 0, 0.8) !important;
   text-decoration: none;
-  font-family: 'DIN Condensed', Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+  font-family: 'DIN Condensed', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
   font-weight: bold;
   padding: 0.5em 0.5em 0.25em 0.5em;
   font-size: 150%;
   text-transform: uppercase;
   margin: 0em 0.33em;
 }
+nav .links a.donate {
+  background-color: rgba(255, 255, 255, 1);
+  -webkit-box-shadow: 0px 0px 36px 7px rgba(255, 255, 255, 0.25);
+  -moz-box-shadow: 0px 0px 36px 7px rgba(255, 255, 255, 0.25);
+  box-shadow: 0px 0px 36px 7px rgba(255, 255, 255, 0.25);
+}
 nav .links a:hover {
   border-color: rgba(0, 0, 0, 0) !important;
-  background-color: rgba(0, 0, 0, 0.6);
+  background-color: rgba(0, 0, 0, 0.4);
   color: rgba(255, 255, 255, 0.9) !important;
+}
+nav a img {
+  opacity: 1.0;
 }
 main {
   padding: 160px 0em 0em 0em;
@@ -126,13 +137,38 @@ footer {
 .underconstruction img {
   width: 80%;
 }
-
+.bigtext {
+  padding: 1em 5em;
+  font-size: 140%;
+  line-height: 1.6em;
+}
+.bigtext p {
+}
+.bigtext li {
+  text-align: center;
+  list-style-type: none;
+  border: solid 2px rgba(192, 192, 192, 0.25);
+  margin-bottom: 1em;
+  color: rgba(0, 0, 0, 0.7);
+}
+.bigtext h1 {
+  color: rgba(0, 0, 0, 0.6);
+  font-size: 150%;
+  margin: 1em 0em 0.75em 0em;
+}
+.gray {
+  background-color: rgba(192, 192, 192, 0.25);
+}
 
 /* == HOME == */
 
 .hero {
   margin: 0;
   width: 100%;
+}
+.signature {
+  margin: 1em 2em 0em 0em;
+  text-align: right;
 }
 
 
@@ -190,4 +226,17 @@ td.num {
   h1 { font-size: 200%; }
   h2 { font-size: 150%; }
   h3 { font-size: 125%; }
+  nav {
+    border-bottom: none;
+  }
+  .bigtext {
+    padding: 2em 1em;
+    font-size: 125%;
+    line-height: 1.5em;
+  }
+  .bigtext h1 {
+    font-size: 150%;
+    margin: 0em 0em 0.0em 0em;
+  }
+    
 }
