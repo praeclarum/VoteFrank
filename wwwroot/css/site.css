@@ -288,7 +288,13 @@ td.num {
     display: inline;
     margin: 1em 0em 1em 0em;
   }
-
+  section.text {
+    padding: 1em 1em 1em 1em;
+    line-height: 1.33em;
+  }
+  section.text p {
+    margin: 1em 0em 1em 0em;  
+  }
 }
 @media only screen and (max-width: 1000px) {
   .bubble {
