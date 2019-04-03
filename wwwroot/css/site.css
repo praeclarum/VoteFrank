@@ -113,6 +113,9 @@ main {
   background-color: #fff;
   padding-bottom: 10em;
 }
+main h1 {
+  padding: 0.5em 0em 0em 0em;
+}
 footer {
   margin-top: 0em;
   padding: 1em 1em 4em 1em;
@@ -193,7 +196,7 @@ section.headshot {
 img.headshot {
   border-radius: 20px;
   float: left;
-  margin: 1em 1em;
+  margin: 1em 1.5em 1em 2em;
 }
 
 
@@ -247,6 +250,9 @@ td.num {
     padding: 0em 0em 10em 0em;
     margin: 0em 0em;
   }
+  main h1 {
+    padding: 1em 0em 0em 0em;
+  }
   h1,h2,h3,h4,h5,h6 {
     padding: 1em 0em;
   }
@@ -265,8 +271,13 @@ td.num {
     font-size: 150%;
     margin: 0em 0em 0.0em 0em;
   }
+  section.headshot {
+    text-align: center;
+  }
   img.headshot {
+    float: none;
     display: inline;
+    margin: 1em 0em 1em 0em;
   }
 
 }
