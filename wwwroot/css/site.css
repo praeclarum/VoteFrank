@@ -60,9 +60,9 @@ h1,h2,h3,h4,h5,h6 {
   padding: 0em 1em;
   text-align: center;
 }
-h1 { font-size: 300%; }
-h2 { font-size: 200%; }
-h3 { font-size: 150%; }
+h1 { font-size: 300%; margin: 0em 0em 0em 0em; }
+h2 { font-size: 200%; margin: 0.5em 0em 1em 0em; }
+h3 { font-size: 150%; margin: 0.5em 0em 1em 0em; }
 strong { font-weight: bold; }
 li { list-style-type: disc; }
 nav {
@@ -118,11 +118,19 @@ main h1 {
   padding: 0.5em 0em 0em 0em;
 }
 section.text {
-  padding: 1em 6em 2em 6em;
+  padding: 1em 10% 2em 10%;
   line-height: 1.33em;
+  text-align: center;
 }
 section.text p {
-  margin: 1em 0em 1em 0em;  
+  text-align: initial;
+  margin: 1em 0em 1em 0em;
+}
+section div.content {
+  max-width: 50em;
+  display: inline-block;
+  text-align: initial;
+  /* background-color: red; */
 }
 footer {
   margin-top: 0em;
@@ -154,6 +162,7 @@ footer {
   font-size: 140%;
   line-height: 1.6em;
   margin: 0;
+  text-align: center;
 }
 .bigtext li {
   text-align: center;
@@ -202,7 +211,7 @@ footer {
 img.headshot {
   border-radius: 20px;
   float: left;
-  margin: 1em 1.5em 1em 2em;
+  margin: 0em 1.5em 1em 0em;
 }
 
 
@@ -260,11 +269,11 @@ td.num {
     padding: 1em 0em 0em 0em;
   }
   h1,h2,h3,h4,h5,h6 {
-    padding: 1em 0em;
+    padding: 0em 0em;
   }
-  h1 { font-size: 200%; }
-  h2 { font-size: 150%; }
-  h3 { font-size: 125%; }
+  h1 { font-size: 225%; margin: 0.0em 0em 0.25em 0em; line-height: 1em; }
+  h2 { font-size: 175%; margin: 0.25em 0em 0.5em 0em; line-height: 1em; }
+  h3 { font-size: 125%; margin: 0.25em 0em 0.5em 0em; line-height: 1em; }
   nav {
     border-bottom: none;
   }

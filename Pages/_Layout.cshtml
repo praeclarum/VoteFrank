@@ -21,11 +21,13 @@
         @RenderBody()
     </main>
     <footer>
+        <div class="content">
         <div class="paidforby">Paid for by<br/><br/>
         Vote Frank Krueger<br/>
         PO Box 95575<br/>
         Seattle, WA 98145</div>
         <div class="legal">&copy; @DateTime.Now.Year Vote Frank Krueger</div>
+        </div>
     </footer>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @RenderSection("Scripts", required: false)
