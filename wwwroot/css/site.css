@@ -199,8 +199,6 @@ footer {
 
 /* == ABOUT == */
 
-section.headshot {
-}
 img.headshot {
   border-radius: 20px;
   float: left;
@@ -303,7 +301,7 @@ td.num {
     right: auto;
     top: auto;
     background-color: rgba(192, 192, 192, 0.25);
-    padding: 1em 1em 2em 1em;
+    padding: 1em 5em 2em 5em;
     border-radius: 0;
   }
   .bubble h1 {
