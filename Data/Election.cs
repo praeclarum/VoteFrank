@@ -355,21 +355,21 @@ namespace VoteFrank
         static readonly HttpClient http = new HttpClient ();
 
         public static Election[] All {get; private set; } = {
-            new Election (2018, 11, "General", "ghxg-x8xz"),
-            new Election (2018, 8, "Primary", "juuz-29xu"),
-            new Election (2017, 11, "General", "xmvr-b3my"),
-            new Election (2017, 8, "Primary", "u623-b62i"),
-            new Election (2016, 11, "General", "b27z-cdmk"),
-            new Election (2016, 8, "Primary", "d9qg-mtfe"),
+            // new Election (2018, 11, "General", "ghxg-x8xz"),
+            // new Election (2018, 8, "Primary", "juuz-29xu"),
+            // new Election (2017, 11, "General", "xmvr-b3my"),
+            // new Election (2017, 8, "Primary", "u623-b62i"),
+            // new Election (2016, 11, "General", "b27z-cdmk"),
+            // new Election (2016, 8, "Primary", "d9qg-mtfe"),
             new Election (2015, 11, "General", "kncv-f6kh"),
             new Election (2015, 8, "Primary", "pyps-tcwb"),
-            new Election (2014, 11, "General", "44iw-f49v"),
-            new Election (2013, 11, "General", "vrn2-xcr7"),
-            new Election (2012, 11, "General", "u6ig-5qm8"),
+            // new Election (2014, 11, "General", "44iw-f49v"),
+            // new Election (2013, 11, "General", "vrn2-xcr7"),
+            // new Election (2012, 11, "General", "u6ig-5qm8"),
             new Election (2011, 11, "General", "hgu2-qaye"),
-            new Election (2010, 11, "General", "jet5-cigp"),
-            new Election (2009, 11, "General", "c34s-iuef"),
-            new Election (2008, 11, "General", "7x99-befe"),
+            // new Election (2010, 11, "General", "jet5-cigp"),
+            // new Election (2009, 11, "General", "c34s-iuef"),
+            // new Election (2008, 11, "General", "7x99-befe"),
         };
 
         const int DataVersion = 3;

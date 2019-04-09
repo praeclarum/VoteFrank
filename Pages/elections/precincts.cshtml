@@ -1,0 +1,102 @@
+@page "{year}/{month}/{office}"
+@{
+    var election = Election.Get(int.Parse(""+@RouteData.Values["year"]), int.Parse(""+@RouteData.Values["month"]));
+    var race = election.Races.First(x => x.Position.Title == ""+@RouteData.Values["office"]);
+    ViewData["Title"] = election.Year + " " + election.Kind + " " + race + " Precincts";
+
+    List<(string Precint, int Votes)> precincts =
+        (from p in race.Votes.Values.FirstOrDefault().PrecinctCounts.Keys.ToList ()
+        let cs = GetVotes (p)
+        let total = cs.Sum (x => x.Item2)
+        orderby total descending
+        select (p, total)).ToList ();
+
+    var totalVotes = precincts.Sum (x => x.Votes);
+    var maxVotes = precincts.Max (x => x.Votes);
+    var minVotes = precincts.Min (x => x.Votes);
+
+    List<(string, int)> GetVotes(string precinct)
+    {
+        var q = from v in race.Votes.Values
+                let c = v.Candidate.Name
+                let p = v.PrecinctCounts[precinct]
+                select (c, p);
+        return q.ToList ();
+    }
+
+    string DrawPrecincts()
+    {
+        var shapesq = from p in precincts
+                        let s = PrecinctShape.GetShape (p.Precint)
+                        where s != null
+                        select (p, s);
+        var shapes = shapesq.ToArray ();
+
+        var minX = shapes.Min (x => x.Item2.Coordinates.Min(y => y.X));
+        var maxX = shapes.Max (x => x.Item2.Coordinates.Max(y => y.X));
+        var minY = shapes.Min (x => x.Item2.Coordinates.Min(y => y.Y));
+        var maxY = shapes.Max (x => x.Item2.Coordinates.Max(y => y.Y));
+
+        var xscale = 10000.0;
+        var yscale = -xscale;
+
+        minX *= xscale;
+        minY *= yscale;
+        maxX *= xscale;
+        maxY *= yscale;
+
+        var t = minY;
+        minY = maxY;
+        maxY = t;
+
+        var svg = new System.IO.StringWriter ();
+        svg.WriteLine($"<svg width='{maxX - minX}' height='{maxY - minY}' viewBox='{minX} {minY} {maxX - minX} {maxY - minY}'>");
+        var icult = System.Globalization.CultureInfo.InvariantCulture;
+        foreach (var p in precincts) {
+            var s = PrecinctShape.GetShape (p.Precint);
+            if (s == null)
+                continue;
+            var fill = (double)(p.Votes - minVotes) / (maxVotes - minVotes);
+            svg.Write($"<polygon opacity='{fill}' stroke='#000' points='");
+            foreach (var c in s.Coordinates) {
+                svg.Write (string.Format (icult, "{0},{1} ", c.X*xscale, c.Y*yscale));
+            }
+            svg.WriteLine("'/>");
+        }
+        svg.WriteLine("</svg>");
+        return svg.ToString ();
+    }
+}
+
+<h1>@election.Year @election.Kind @race.Position Precincts</h1>
+
+<section class="bigimage">
+    <div class="content">
+        @Html.Raw(DrawPrecincts())
+    </div>
+</section>
+
+<section class="text">
+    <div class="content">
+        <div class="races">
+            @await Html.PartialAsync("_RaceSummary", race)
+        </div>
+    </div>
+</section>
+
+<section class="text">
+    <div class="content">
+        <table>
+        <tr><td>Total Votes<td>@totalVotes.ToString("#,0")</td></tr>
+        <tr><td>Max Votes<td>@maxVotes.ToString("#,0")</td></tr>
+        <tr><td>Min Votes</td><td>@minVotes.ToString("#,0")</td></tr>
+        </table>
+        <table>
+            <tr><th>Precinct</th><th>Votes</th></tr>
+            @foreach (var v in precincts) {
+                <tr><td>@v.Item1</td><td>@v.Item2</td></tr>
+            }
+        </table>
+    </div>
+</section>
+

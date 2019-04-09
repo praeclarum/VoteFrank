@@ -6,9 +6,13 @@
 
 <h1>@election.Year @election.Kind Election</h1>
 
-<div class="races">
-@foreach (var r in election.Races) {
-    @await Html.PartialAsync("_RaceSummary", r)
-}
-</div>
+<section class="text">
+    <div class="content">
+        <div class="races">
+        @foreach (var r in election.Races) {
+            @await Html.PartialAsync("_RaceSummary", r)
+        }
+        </div>
+    </div>
+</section>
 

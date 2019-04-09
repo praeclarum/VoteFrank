@@ -53,10 +53,10 @@
     var thisyear = false;//nextYear == (DateTime.Now.Year);
     var clas = thisyear ? "thisyear" : "";
 <tr class="@clas">
-    <td><a href="/position/@Uri.EscapeDataString(p.Title)">@p</a></td>
+    <td><a href="/elections/office/@Uri.EscapeDataString(p.Title)">@p</a></td>
     <td class="num">@nprecincts</td>
-    <td><a href="/person/@Uri.EscapeDataString(person?.Name??"")">@person</a></td>
-    <td class="num"><a href="/position/@Uri.EscapeDataString(p.Title)">@e?.Year</a></td>
+    <td><a href="/elections/candidate/@Uri.EscapeDataString(person?.Name??"")">@person</a></td>
+    <td class="num"><a href="/elections/office/@Uri.EscapeDataString(p.Title)">@e?.Year</a></td>
     <td class="num">@nextYear</td>
     <td class="num">@volatility</td>
     <td class="num">@(margin?.ToString("#,0") ?? "-")</td>
@@ -69,8 +69,8 @@
 
 <ol>
 @foreach (var (p, r) in winners) {
-<li><a href="/person/@Uri.EscapeDataString(p.Name)">@p.Name</a> @p.NumGeneralWins wins 
-   <a href="/position/@Uri.EscapeDataString(r.Position.Title)">@r.Election.Year @r.Position</a></li>
+<li><a href="/elections/candidate/@Uri.EscapeDataString(p.Name)">@p.Name</a> @p.NumGeneralWins wins 
+   <a href="/elections/office/@Uri.EscapeDataString(r.Position.Title)">@r.Election.Year @r.Position</a></li>
 }
 </ol>
 
@@ -79,6 +79,6 @@
 
 <table>
 @foreach (var e in elections.OrderByDescending(x => x.Date)) {
-<tr><th><a href="/election/@e.Year/@e.Month">@e.Year-@e.Month @e.Kind</a></th></tr>
+<tr><th><a href="/elections/election/@e.Year/@e.Month">@e.Year-@e.Month @e.Kind</a></th></tr>
 }
 </table>
