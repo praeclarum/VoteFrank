@@ -345,6 +345,10 @@ div.fc .form-group .wrapper-label .label-field {
   section.text p {
     margin: 1em 0em 1em 0em;  
   }
+  section.bubble {
+    padding: 1em 1em 1em 1em;
+    line-height: 1.33em;
+  }
 }
 @media only screen and (max-width: 1000px) {
   .bubble {
