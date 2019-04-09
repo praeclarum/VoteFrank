@@ -37,17 +37,14 @@
         var minY = shapes.Min (x => x.Item2.Coordinates.Min(y => y.Y));
         var maxY = shapes.Max (x => x.Item2.Coordinates.Max(y => y.Y));
 
-        var xscale = 10000.0;
-        var yscale = -xscale;
+        var xscale = 3000000.0;
+        var yscale = xscale;
 
         minX *= xscale;
         minY *= yscale;
         maxX *= xscale;
         maxY *= yscale;
 
-        var t = minY;
-        minY = maxY;
-        maxY = t;
 
         var svg = new System.IO.StringWriter ();
         svg.WriteLine($"<svg width='{maxX - minX}' height='{maxY - minY}' viewBox='{minX} {minY} {maxX - minX} {maxY - minY}'>");
@@ -61,7 +58,7 @@
             foreach (var c in s.Coordinates) {
                 svg.Write (string.Format (icult, "{0},{1} ", c.X*xscale, c.Y*yscale));
             }
-            svg.WriteLine("'/>");
+            svg.WriteLine($"'><title>{p.Precint}</title></polygon>");
         }
         svg.WriteLine("</svg>");
         return svg.ToString ();

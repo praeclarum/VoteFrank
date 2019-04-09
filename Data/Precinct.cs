@@ -64,9 +64,14 @@ namespace VoteFrank
                             var n = cs[0].Trim();
                             var coords =
                                 cs[1].Split (' ')
-                                .Select (x => {
-                                    var xs = x.Split(',');
-                                    return new Point (double.Parse(xs[0]), double.Parse(xs[1]));
+                                .Select (c => {
+                                    var xs = c.Split(',');
+                                    var lon = double.Parse(xs[0]);
+                                    var lat = double.Parse(xs[1]);
+                                    var lat_rad = lat * Math.PI / 180.0;
+                                    var x = (lon + 180.0) / 360.0;
+                                    var y = (1.0 - Math.Log(Math.Tan(lat_rad) + (1 / Math.Cos(lat_rad))) / Math.PI) / 2.0;
+                                    return new Point (x, y);
                                 })
                                 .ToArray ();
                             var shape = new PrecinctShape (n, coords);
