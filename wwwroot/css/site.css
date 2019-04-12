@@ -60,9 +60,9 @@ h1,h2,h3,h4,h5,h6 {
   padding: 0em 1em;
   text-align: center;
 }
-h1 { font-size: 300%; margin: 0em 0em 0em 0em; }
-h2 { font-size: 200%; margin: 0.5em 0em 1em 0em; }
-h3 { font-size: 150%; margin: 0.5em 0em 1em 0em; }
+h1 { font-size: 300%; margin: 0em 0em 0em 0em; line-height: 1em; }
+h2 { font-size: 200%; margin: 0.5em 0em 1em 0em; line-height: 1em; }
+h3 { font-size: 150%; margin: 0.5em 0em 1em 0em; line-height: 1em; }
 a { color: rgb(25, 60, 110) }
 a:visited { color: rgb(74, 103, 141) }
 strong { font-weight: bold; }
@@ -129,7 +129,7 @@ section.text p {
   margin: 1em 0em 1em 0em;
 }
 section div.content {
-  max-width: 50em;
+  max-width: 55em;
   display: inline-block;
   text-align: initial;
   /* background-color: red; */
