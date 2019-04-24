@@ -1,0 +1,8 @@
+sudo vi /etc/apache2/sites-available/votefrank.org.conf 
+sudo service apache2 restart
+
+sudo vi /etc/systemd/system/site-votefrank.service
+sudo systemctl start site-votefrank.service
+sudo systemctl stop site-votefrank.service
+sudo systemctl status site-votefrank.service
+
