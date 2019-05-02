@@ -6,12 +6,23 @@
     <title>@ViewData["Title"]</title>
     <meta name="twitter:card" content="summary" />
     <meta name="twitter:site" content="@("votefrank2019")" />
-    <meta name="twitter:title" content="@ViewData["Title"]" />
-    <meta name="twitter:description" content="@ViewData["Description"]" />
-    @if (@ViewData["Image"] == null) {
-    <meta name="twitter:image" content="@ViewData["Image"]" />
-    <meta name="twitter:image:alt" content="@ViewData["ImageAlt"]" />
+    <meta name="og:title" content="@ViewData["Title"]" />
+    @{
+        var image = @ViewData["Image"]?.ToString ();
+        var imageAlt = @ViewData["ImageAlt"]?.ToString ();
+        if (image == null) {
+            image = "https://votefrank.org/images/logoc256.jpg";
+            imageAlt = "Vote Frank Krueger Campaign Logo";
+        }
+
+        var description = @ViewData["Description"]?.ToString ();
+        if (description == null) {
+            description = "Vote Frank Krueger for Seattle City Council District 4 (Eastlake, Laurelhurst, Ravenna / Roosevelt, Sand Point, U District, and Wallingford).";
+        }
     }
+    <meta name="og:description" content="@description" />
+    <meta name="og:image" content="@image" />
+    <meta name="twitter:image:alt" content="@imageAlt" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 </head>
 <body>
