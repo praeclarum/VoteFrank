@@ -233,7 +233,8 @@ section.gray {
 }
 
 
-/* ISSUES */
+/* == ISSUES == */
+
 ul.bigbuttons {
   margin-top: 1em;
   line-height: 5em;
@@ -282,7 +283,7 @@ ul.solutions li {
 }
 
 ul.solutions.gray li {
-  background-color: rgba(192, 192, 192, 0.4);
+  background-color: rgba(192, 192, 192, 0.38);
 }
 
 /* == ABOUT == */
