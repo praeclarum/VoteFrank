@@ -99,9 +99,9 @@ nav .links a {
 }
 nav .links a.donate {
   background-color: rgba(255, 255, 255, 1);
-  -webkit-box-shadow: 0px 0px 36px 7px rgba(255, 255, 255, 0.25);
-  -moz-box-shadow: 0px 0px 36px 7px rgba(255, 255, 255, 0.25);
-  box-shadow: 0px 0px 36px 7px rgba(255, 255, 255, 0.25);
+  -webkit-box-shadow: 0px 0px 36px 7px rgba(255, 255, 255, 0.33);
+  -moz-box-shadow: 0px 0px 36px 7px rgba(255, 255, 255, 0.33);
+  box-shadow: 0px 0px 36px 7px rgba(255, 255, 255, 0.33);
 }
 nav .links a:hover {
   border-color: rgba(0, 0, 0, 0) !important;
@@ -204,7 +204,7 @@ section.bigimage div.content {
 section.bigimage div.content svg {
   width: 100%;
 }
-.gray {
+section.gray {
   background-color: rgba(192, 192, 192, 0.25);
 }
 
@@ -273,9 +273,16 @@ ul.solutions li {
   border: none;
   border-radius: 0.5em;
   padding: 1em 1em;
-  margin: 1em 0.0em;
+  margin: 2em 0.0em;
   color: #333;
   background-color: #fff;
+  -webkit-box-shadow: 0px 0px 36px 7px rgba(128, 128, 128, 0.2);
+  -moz-box-shadow: 0px 0px 36px 7px rgba(128, 128, 128, 0.2);
+  box-shadow: 0px 0px 36px 7px rgba(128, 128, 128, 0.2);
+}
+
+ul.solutions.gray li {
+  background-color: rgba(192, 192, 192, 0.4);
 }
 
 /* == ABOUT == */
