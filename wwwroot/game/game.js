@@ -5,7 +5,7 @@ var game = new Phaser.Game(256, 240, Phaser.CANVAS, 'gamearea', {
   }, false, false);
   
   function preload() {
-    game.load.spritesheet('tiles', '/game/tiles_dctsfk.png', 16, 16);
+    game.load.spritesheet('tiles', '/game/tiles.png', 16, 16);
     game.load.spritesheet('goomba', '/game/goomba_nmbtds.png', 16, 16);
     game.load.spritesheet('mario', '/game/mario_wjlfy5.png', 16, 16);
     game.load.spritesheet('coin', '/game/coin_iormvy.png', 16, 16);
