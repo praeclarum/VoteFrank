@@ -22,13 +22,21 @@ namespace VoteFrank.Controllers
             Console.WriteLine("DEPLOY!!!");
 
             var process = new Process();
+            var o = new System.Text.StringBuilder();
             process.StartInfo.FileName = "git";
             process.StartInfo.Arguments = "pull --rebase";
             process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
             process.Start();
+            process.StartInfo.RedirectStandardOutput = true;
+            process.StartInfo.RedirectStandardError = true;
+            process.OutputDataReceived += (sender, args) => { lock(o) o.AppendLine(args.Data); };
+            process.ErrorDataReceived += (sender, args) => { lock(o) o.AppendLine(args.Data); };
+            process.Start();
+            process.BeginOutputReadLine();
+            process.BeginErrorReadLine();
             process.WaitForExit();
 
-            return $"OK {process.ExitCode}";
+            return o.ToString();
         }
 
         public class DeployBody
