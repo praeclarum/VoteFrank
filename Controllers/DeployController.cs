@@ -24,7 +24,7 @@ namespace VoteFrank.Controllers
             var process = new Process();
             var o = new System.Text.StringBuilder();
             process.StartInfo.FileName = "git";
-            process.StartInfo.Arguments = "pull --rebase";
+            process.StartInfo.Arguments = "pull --rebase origin master";
             process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
             process.Start();
             process.StartInfo.RedirectStandardOutput = true;
