@@ -36,6 +36,10 @@ namespace VoteFrank.Controllers
             process.BeginErrorReadLine();
             process.WaitForExit();
 
+            if (process.ExitCode != 0) {
+                Response.StatusCode = 503;
+            }
+
             return o.ToString();
         }
 
