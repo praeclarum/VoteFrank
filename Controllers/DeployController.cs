@@ -12,13 +12,13 @@ namespace VoteFrank.Controllers
         // curl -d '{"repository":{"full_name":"praeclarum/VoteFrank"}, "key2":"value2"}' -H "Content-Type: application/json" -X POST  "http://\$votefrank:rmme0pdGhuDsYtHDYrddZRc7kwD7fAlyZrDQw6790qTtLjRZn92sw3oz1bmr@localhost:5000/deploy?scmType=GitHub"
 
         [HttpPost]
-        public string Post([FromBody]DeployBody body)
+        public string Post()
         {
-            if (body.repository.full_name != "praeclarum/VoteFrank")
-            {
-                Response.StatusCode = 404;
-                return "";
-            }
+            // if (body.repository.full_name != "praeclarum/VoteFrank")
+            // {
+            //     Response.StatusCode = 404;
+            //     return "";
+            // }
             Console.WriteLine("DEPLOY!!!");
 
             var process = new Process();
